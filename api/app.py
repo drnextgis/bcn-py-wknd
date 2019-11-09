@@ -9,7 +9,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/search", methods=["post"])
+@app.route("/search", methods=["get"])
 def search():
     # searchForm: {
     #     departure: new Date(2019, 9, 16),
@@ -17,7 +17,7 @@ def search():
     #     from: '',
     #     to: ''
     # }
-    searchForm = request.get_json()
+    searchForm = request.args
 
     parsedSearchForm = {
         "from": searchForm["from"],
@@ -32,12 +32,14 @@ def search():
             "to": "PRG",
             "departure": "2019, 9, 16",
             "return": "2096, 9, 16",
+            "price": 200.5,
         },
         {
             "from": "BCN",
             "to": "PRG",
             "departure": "2019, 9, 17",
             "return": "2096, 9, 18",
+            "price": 200.5,
         },
     ]
     return jsonify(results=search_results)

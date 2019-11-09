@@ -25,10 +25,14 @@
                 <button @click.prevent="search">Search</button>
             </div>
         </form>
-        <div class="row">
+        <div v-if="loading">
+            <img src="http://www.nps.tours/public/images/activity/loading.gif" alt="loading">
+        </div>
+        <div v-else class="row">
             <ul>
                 <li v-for="result in searchResults" :key="result.departure">
-                    {{ result.from }} -> {{ result.to }}, {{ result.departure }} -> {{ result.return }}
+                    {{ result.from }} -> {{ result.to }}, {{ result.departure }} -> {{ result.return }},
+                    ${{ result.price }}
                 </li>
             </ul>
         </div>
@@ -40,6 +44,7 @@
     const app = new Vue({
         el: '#app',
         data: {
+            loading: false,
             searchForm: {
                 departure: new Date(2019, 9, 16),
                 return: new Date(2096, 9, 16),
@@ -53,11 +58,15 @@
         },
         methods: {
             search() {
-                axios
-                    .post('/search', this.searchForm)
-                    .then(resp => {
-                        this.searchResults = resp.data.results
-                    })
+                this.loading = true
+                setTimeout(() => {
+                    axios
+                        .get('/search', { params: this.searchForm })
+                        .then(resp => {
+                            this.searchResults = resp.data.results
+                            this.loading = false
+                        })
+                }, 2000);
             }
         },
     })
